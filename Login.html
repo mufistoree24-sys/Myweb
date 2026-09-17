@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000;
+        }
+
+        .bg-video {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            background: #000;
+        }
+
+        .bg-overlay {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 380px;
+            padding: 20px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            color: #ffffff;
+            width: 100%;
+            text-align: center;
+        }
+
+        .card h2 {
+            font-size: 26px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            letter-spacing: 0.5px;
+        }
+
+        .input-group {
+            margin-bottom: 18px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 6px;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 500;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            font-size: 13px;
+            min-height: 20px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #111111;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.85);
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .success-card {
+            display: none;
+            animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes slideUpFade {
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .checkmark-circle {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+        }
+
+        .checkmark-icon {
+            width: 20px;
+            height: 38px;
+            border: solid #ffffff;
+            border-width: 0 4px 4px 0;
+            transform: rotate(45deg);
+            margin-top: -6px;
+            margin-left: 2px;
+        }
+    
+        #soundBtn {
+            position: fixed;
+            left: 50%;
+            bottom: 24px;
+            transform: translateX(-50%);
+            z-index: 4;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 18px;
+            border: 1px solid rgba(255,255,255,0.35);
+            border-radius: 999px;
+            background: rgba(0,0,0,0.45);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .sound-icon {
+            width: 14px;
+            height: 14px;
+            display: inline-block;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .sound-icon::after {
+            content: "";
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: #fff;
+            border-radius: 50%;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+    </style>
+</head>
+<body>
+
+    <video class="bg-video" id="bgVideo" autoplay loop playsinline preload="auto">
+        <source src="Mufid.mp4" type="video/mp4">
+    </video>
+
+    <div class="bg-overlay"></div>
+
+    <button id="soundBtn" type="button" aria-label="Aktifkan suara">
+        <span class="sound-icon"></span>
+        <span>Aktifkan suara</span>
+    </button>
+
+    <div class="container">
+        <div class="card" id="loginCard">
+            <h2>Login</h2>
+            <form id="loginForm">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" autocomplete="off" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required>
+                </div>
+                <div id="errorMessage" class="error-message"></div>
+                <button type="submit" class="btn">Login</button>
+            </form>
+        </div>
+
+        <div class="card success-card" id="successCard">
+            <div class="checkmark-circle">
+                <div class="checkmark-icon"></div>
+            </div>
+            <h2>Login berhasil</h2>
+        </div>
+    </div>
+
+    <script>
+        const bgVideo = document.getElementById('bgVideo');
+        function startBackgroundVideo() {
+            if (!bgVideo) return;
+            bgVideo.muted = true;
+            bgVideo.load();
+            const p = bgVideo.play();
+            if (p) p.catch(() => {});
+        }
+        window.addEventListener('load', startBackgroundVideo);
+        document.addEventListener('visibilitychange', startBackgroundVideo);
+
+
+        const soundBtn = document.getElementById('soundBtn');
+
+        if (bgVideo && soundBtn) {
+            soundBtn.addEventListener('click', async function () {
+                try {
+                    bgVideo.muted = false;
+                    bgVideo.removeAttribute('muted');
+                    await bgVideo.play();
+                    soundBtn.style.display = 'none';
+                } catch (error) {
+                    bgVideo.muted = false;
+                }
+            });
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const usernameInput = document.getElementById('username').value;
+            const passwordInput = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+            const loginCard = document.getElementById('loginCard');
+            const successCard = document.getElementById('successCard');
+
+            if (usernameInput === "Mufid" && passwordInput === "241114") {
+                errorMessage.textContent = "";
+                loginCard.style.display = "none";
+                successCard.style.display = "block";
+            } else {
+                errorMessage.textContent = "Username atau password salah";
+            }
+        });
+    </script>
+
+</body>
+</html>
