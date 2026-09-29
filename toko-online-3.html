@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mufidstoree</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#0d0f1a;--card:#161a2b;--ink:#eef0fa;--mut:#9aa0bf;--line:#262b44;--ac:#7f73ff;--ac2:#232050;--ok:#4fd6a0;--okb:#12382c;--no:#ff7d8b;--nob:#3f1a20;--wa:#1faa59;--wn:#f5b54a;--wnb:#3d2d0c}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+body{margin:0;overflow-x:hidden;background:var(--bg);color:var(--ink);font:400 15px/1.5 'Bricolage Grotesque',system-ui,-apple-system,'Segoe UI',sans-serif;min-height:100%}
+h1,h2,h3{margin:0;line-height:1.15;letter-spacing:-.02em}h1{font-size:clamp(30px,7vw,52px);font-weight:800}h2{font-size:22px;font-weight:800}h3{font-size:16px;font-weight:600}
+p{margin:0}a{color:inherit;text-decoration:none}
+.ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.wrap{max-width:1040px;margin:0 auto;padding:26px 16px 110px}
+header{position:sticky;top:0;z-index:20;background:rgba(13,15,26,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding-top:calc(env(safe-area-inset-top,0px) + 14px)}
+.bar{max-width:1040px;margin:0 auto;padding:0 16px 10px;display:flex;flex-direction:column;gap:10px}
+.logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px;letter-spacing:-.02em}
+.logo i{width:30px;height:30px;border-radius:9px 9px 9px 3px;background:var(--ac);color:#fff;display:grid;place-items:center}
+nav{display:flex;gap:4px}
+nav a{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 4px;border-radius:12px;color:var(--mut);font-weight:600;font-size:12px;transition:.15s}
+nav a.on{background:var(--ac2);color:#b9b1ff}nav a:hover{color:var(--ink)}
+@media(min-width:641px){.bar{flex-direction:row;align-items:center;justify-content:space-between;padding-bottom:12px}nav a{flex:none;flex-direction:row;gap:6px;font-size:14px;padding:8px 14px}}
+.hero{padding:10px 0 8px;display:grid;gap:14px}.hero p{color:var(--mut);max-width:46ch;font-size:16px}
+.hero .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+.btn{border:0;cursor:pointer;font:600 15px inherit;font-family:inherit;padding:12px 18px;border-radius:14px;background:var(--ac);color:#fff;display:inline-flex;gap:8px;align-items:center;justify-content:center;transition:transform .12s,opacity .15s}
+.btn:active{transform:scale(.97)}.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.g{background:var(--ac2);color:var(--ac)}.btn.ok{background:var(--ok);color:#fff}.btn.no{background:var(--nob);color:var(--no)}.btn.sm{padding:9px 13px;font-size:14px}
+:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.ket{color:var(--wn);font-size:12.5px;font-weight:600}.pc h3{overflow-wrap:anywhere}.price{overflow-wrap:anywhere;line-height:1.25}
+@media(max-width:520px){.grid{grid-template-columns:1fr 1fr;gap:10px}.pc .b{padding:10px}.pc p{display:none}.pc .f{flex-direction:column;align-items:stretch}.pc .price{font-size:14px}.pc .btn{width:100%}}
+@media(max-width:340px){.grid{grid-template-columns:1fr}}
+.btn.ok{color:#06251a}.vr{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:14px 16px;color:var(--ink);font:600 15px inherit;font-family:inherit;cursor:pointer;transition:.15s}.vr:hover,.vr:focus-visible{border-color:var(--ac)}.vr b{font-weight:800}
+.pc{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;transition:transform .18s}
+.pc:hover{transform:translateY(-3px)}.pc .b{padding:14px;display:grid;gap:6px;flex:1;align-content:start}.pc p{color:var(--mut);font-size:13.5px}
+.pc .f{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:auto;padding-top:8px}.price{font-weight:800;font-size:16px}
+.art{aspect-ratio:4/3;display:grid;place-items:center;position:relative;overflow:hidden}.art .ic{width:44%;height:44%;stroke-width:1.4;color:#fff;position:relative}
+.art:before,.art:after{content:"";position:absolute;border-radius:50%;background:#fff2}.art:before{width:70%;aspect-ratio:1;left:-15%;top:-30%}.art:after{width:45%;aspect-ratio:1;right:-10%;bottom:-20%}
+.sec{display:flex;justify-content:space-between;align-items:end;margin:26px 0 12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px}
+.form{display:grid;gap:14px;max-width:560px;margin:0 auto}label{display:grid;gap:6px;font-weight:600;font-size:14px}
+input[type=text],input[type=tel],input[type=password],input[type=number]{font:inherit;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);width:100%}
+input:focus{outline:none;border-color:var(--ac)}
+.sum{display:grid;gap:8px}.sum div{display:flex;justify-content:space-between;gap:10px}.sum .t{border-top:1px dashed var(--line);padding-top:10px;font-weight:800;font-size:18px}
+.qty{display:flex;align-items:center;gap:10px}.qty button{width:38px;height:38px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font-size:20px;cursor:pointer}
+.qty b{min-width:26px;text-align:center}
+.steps{display:flex;gap:6px;margin-bottom:14px}.steps i{flex:1;height:5px;border-radius:9px;background:var(--line)}.steps i.on{background:var(--ac)}
+.norek{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--ac2);border-radius:14px;padding:14px;font-weight:800;font-size:22px;letter-spacing:.02em;color:var(--ac);margin:10px 0}
+.drop{border:2px dashed var(--line);border-radius:16px;padding:18px;text-align:center;color:var(--mut);cursor:pointer;display:grid;gap:6px;justify-items:center}
+.drop img{max-width:100%;max-height:220px;border-radius:10px}
+.badge{display:inline-block;padding:4px 10px;border-radius:99px;font-weight:700;font-size:12.5px}
+.s-proses{background:var(--wnb);color:var(--wn)}.s-diterima{background:var(--okb);color:var(--ok)}.s-ditolak{background:var(--nob);color:var(--no)}
+.spin{width:54px;height:54px;border-radius:50%;border:5px solid var(--ac2);border-top-color:var(--ac);animation:sp 1s linear infinite;margin:0 auto}@keyframes sp{to{transform:rotate(360deg)}}
+.center{text-align:center;display:grid;gap:12px;justify-items:center;padding:20px 0}
+.pop{animation:pop .4s cubic-bezier(.3,1.6,.5,1)}@keyframes pop{from{transform:scale(.6);opacity:0}}
+.wa{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:25;display:flex;align-items:center;gap:10px;background:var(--wa);color:#fff;border-radius:99px;padding:8px 8px 8px 16px;box-shadow:0 6px 22px #1faa5966;font-weight:600;font-size:13px;line-height:1.2}
+.wa span{display:grid;max-width:130px}.wa i{width:44px;height:44px;border-radius:50%;background:#fff3;display:grid;place-items:center}.wa .ic{width:24px;height:24px}
+@media(min-width:641px){.wa{bottom:20px}.wrap{padding-bottom:100px}}
+.ord{display:grid;gap:10px}.ord .h{display:flex;justify-content:space-between;gap:10px;align-items:start;flex-wrap:wrap}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px 14px;font-size:14px}.meta small{display:block;color:var(--mut);font-size:12px}
+.proof{width:88px;height:88px;object-fit:cover;border-radius:12px;border:1px solid var(--line);cursor:zoom-in}
+.acts{display:flex;gap:8px;flex-wrap:wrap}.list{display:grid;gap:12px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}.stats .card{padding:12px}.stats b{font-size:26px;display:block}.stats span{color:var(--mut);font-size:13px}
+.notif{background:var(--ink);color:var(--bg);border-radius:18px;padding:14px 16px;display:flex;gap:12px;align-items:start;justify-content:space-between;animation:slide .45s cubic-bezier(.2,.9,.3,1.2);margin-bottom:10px}
+.notif b{display:flex;gap:8px;align-items:center}.notif .pulse{width:10px;height:10px;border-radius:50%;background:#ff5d6c;animation:pl 1.4s infinite}
+@keyframes slide{from{transform:translateY(-14px);opacity:0}}@keyframes pl{50%{box-shadow:0 0 0 7px #ff5d6c33}}
+.notif small{display:block;opacity:.85;margin-top:2px}.notif button{background:#fff2;color:inherit;border:0;border-radius:10px;padding:6px 10px;cursor:pointer;font:inherit;font-size:13px}
+.err{color:var(--no);font-size:13.5px;font-weight:600;min-height:18px}
+.tabs{display:flex;gap:6px;margin:12px 0;flex-wrap:wrap}.tabs button{border:1.5px solid var(--line);background:none;color:var(--mut);padding:7px 13px;border-radius:99px;font:600 13.5px inherit;font-family:inherit;cursor:pointer}.tabs button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.lb{position:fixed;inset:0;background:#000c;z-index:50;display:grid;place-items:center;padding:20px}.lb img{max-width:100%;max-height:90vh;border-radius:12px}
+.empty{text-align:center;color:var(--mut);padding:36px 10px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header><div class="bar">
+  <a class="logo" href="#/"><i id="lg"></i>Lapak Digital</a>
+  <nav id="nav"></nav>
+</div></header>
+<main class="wrap" id="app"></main>
+<a class="wa" id="wa" href="https://wa.me/6288213078871?text=Halo%2C%20saya%20mau%20order" target="_blank" rel="noopener" aria-label="Chat WhatsApp"><span>Order lewat WhatsApp juga bisa</span><i></i></a>
+<div id="lbx"></div>
+
+<script>
+/* =====================================================================
+   DATA — semua yang perlu diedit ada di bagian ini
+   ===================================================================== */
+const CONFIG = {
+  toko: 'Lapak Digital',
+  noTujuan: '088213078871',        // nomor transfer manual
+  waAdmin: '6288213078871',        // format internasional untuk link WhatsApp
+  admin: { user: 'Mufid', pass: '241114' } // DEMO: masih terlihat di kode. Pindahkan ke server kalau sudah pakai database.
+};
+const rupiah = n => 'Rp' + Number(n).toLocaleString('id-ID');
+const PRODUCTS = [ // varian: isi kalau harga punya pilihan. Nama varian di bawah = contoh, silakan ganti.
+  {id:'apk-bug', nama:'APK Bug', ikon:'bug', warna:['#5b4bff','#8f7bff'], desk:'Aplikasi bug, harga menyesuaikan role yang dipilih.', ket:'Harga tergantung role',
+    varian:[{nama:'Role 1',harga:25000},{nama:'Role 2',harga:50000},{nama:'Role 3',harga:100000},{nama:'Role 4',harga:200000}]},
+  {id:'apk-qris', nama:'APK QRIS No KTP', harga:3000, ikon:'qr', warna:['#0f9d8a','#43cdb7'], desk:'APK QRIS tanpa perlu verifikasi KTP.'},
+  {id:'tutor-hd', nama:'Tutor HD-in Foto', harga:3000, ikon:'img', warna:['#e0577b','#ff8fa9'], desk:'Tutorial membuat foto buram jadi tajam dan jernih.'},
+  {id:'tutor-hd2', nama:'Tutor HD-in Foto V2', harga:4000, ikon:'img', warna:['#d9660f','#ffa04d'], desk:'Versi lanjutan dengan metode baru.'},
+  {id:'nokos', nama:'Nokos', ikon:'sim', warna:['#2f6fe4','#66a3ff'], desk:'Nomor kosong untuk kebutuhan verifikasi akun.', ket:'Pilih varian saat beli',
+    varian:[{nama:'Varian 1',harga:3000},{nama:'Varian 2',harga:5000},{nama:'Varian 3',harga:10000}]},
+  {id:'apk-bola', nama:'APK Nonton Bola Gratis', harga:1000, ikon:'ball', warna:['#1a8f3c','#5dd07a'], desk:'Nonton pertandingan bola lewat HP tanpa langganan.'},
+  {id:'apk-rog', nama:'APK ROG', harga:2000, ikon:'game', warna:['#c4243a','#ff6b7f'], desk:'APK bertema ROG untuk tampilan dan performa main game.'},
+  {id:'poster-jb', nama:'Poster JB', ikon:'poster', warna:['#7a3fd0','#b58cff'], desk:'Poster JB dengan beberapa pilihan varian.', ket:'Pilih varian saat beli',
+    varian:[{nama:'Varian 1',harga:1000},{nama:'Varian 2',harga:2000},{nama:'Varian 3',harga:3000}]},
+  {id:'am-prem', nama:'AM Premium', harga:4000, ikon:'film', warna:['#11223f','#3a5a94'], desk:'Akun premium 4K, aktif 1 tahun.', ket:'Akun dari seller private'}
+];
+const hargaLabel = p => p.varian ? rupiah(Math.min(...p.varian.map(v=>v.harga)))+' - '+rupiah(Math.max(...p.varian.map(v=>v.harga))) : rupiah(p.harga);
+
+/* Repository pesanan. Kalau nanti pakai database, ganti isi fungsi ini
+   dengan fetch() ke API — sisa kode tidak perlu diubah. */
+const Orders = {
+  key:'ld_orders',
+  all(){ try{return JSON.parse(localStorage.getItem(this.key))||[]}catch(e){return []} },
+  save(a){ try{localStorage.setItem(this.key,JSON.stringify(a))}catch(e){throw new Error('Penyimpanan penuh')} },
+  add(o){ const a=this.all(); a.unshift(o); this.save(a) },
+  setStatus(id,s){ const a=this.all(); const o=a.find(x=>x.id===id); if(o){o.status=s;o.updated=Date.now();this.save(a)} },
+  mine(){ try{return JSON.parse(localStorage.getItem('ld_mine'))||[]}catch(e){return []} },
+  addMine(id){ const m=this.mine(); m.push(id); localStorage.setItem('ld_mine',JSON.stringify(m)) },
+  seen(){ try{return JSON.parse(localStorage.getItem('ld_seen'))||[]}catch(e){return []} },
+  markSeen(ids){ localStorage.setItem('ld_seen',JSON.stringify([...new Set([...this.seen(),...ids])])) }
+};
+const Auth = {
+  ok(){ return sessionStorage.getItem('ld_admin')==='1' },
+  login(u,p){ if(u===CONFIG.admin.user&&p===CONFIG.admin.pass){sessionStorage.setItem('ld_admin','1');return true} return false },
+  logout(){ sessionStorage.removeItem('ld_admin') }
+};
+
+/* ===================== ikon SVG ===================== */
+const P={bag:'M6 7h12l1 13H5L6 7zM9 7a3 3 0 016 0',home:'M3 11l9-8 9 8M5 10v10h14V10',grid:'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z',receipt:'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6',shield:'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z',check:'M5 12l5 5 9-10',x:'M6 6l12 12M18 6L6 18',upload:'M12 16V4M7 9l5-5 5 5M4 20h16',clock:'M12 3a9 9 0 100 18 9 9 0 000-18zM12 7v5l3 2',bug:'M9 8a3 3 0 016 0v8a3 3 0 01-6 0zM4 10h5M15 10h5M4 16h5M15 16h5M12 8v10',qr:'M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 18h2v2h-2zM14 18h2',img:'M4 5h16v14H4zM4 16l5-5 4 4 3-3 4 4M9 9h.01',sim:'M7 3h7l4 4v14H7zM10 12h5v5h-5z',ball:'M12 3a9 9 0 100 18 9 9 0 000-18zM12 8l3 2-1 4h-4l-1-4z',game:'M3 9h18v8H3zM7 11v4M5 13h4M15 13h.01M18 13h.01',film:'M4 5h16v14H4zM8 5v14M16 5v14M4 12h4M16 12h4',poster:'M5 3h14v18H5zM8 8h8M8 12h8M8 16h4',wa:'M4 20l1.5-4.5A8 8 0 1112 20a8 8 0 01-3.5-.8zM9 9c0 3 3 6 6 6l1-2-2-1-1 1c-1-.5-2-1.5-2.5-2.5l1-1-1-2z',copy:'M9 9h11v11H9zM5 15V4h11',out:'M14 4h6v16h-6M10 8l-4 4 4 4M6 12h10',bell:'M6 16V11a6 6 0 0112 0v5l2 2H4zM10 21h4',plus:'M12 5v14M5 12h14'};
+const ic = n => `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="${P[n]}"/></svg>`;
+document.getElementById('lg').innerHTML = ic('bag');
+document.querySelector('#wa i').innerHTML = ic('wa');
+const art = p => `<div class="art" style="background:linear-gradient(135deg,${p.warna[0]},${p.warna[1]})">${ic(p.ikon)}</div>`;
+const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $ = s => document.querySelector(s);
+
+/* ===================== status ===================== */
+const LABEL_BUYER = {proses:'PROSES',diterima:'PEMBAYARAN DITERIMA',ditolak:'PEMBAYARAN DITOLAK'};
+const LABEL_ADMIN = {proses:'Menunggu Konfirmasi',diterima:'PEMBAYARAN DITERIMA',ditolak:'PEMBAYARAN DITOLAK'};
+const badge = (s,admin) => `<span class="badge s-${s}">${(admin?LABEL_ADMIN:LABEL_BUYER)[s]}</span>`;
+const waktu = t => new Date(t).toLocaleString('id-ID',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+
+/* ===================== routing ===================== */
+let co = null, adminFilter = 'semua', timer = null;
+const routes = [['home','Home','/'],['produk','Produk','/produk'],['pesanan','Pesanan','/pesanan'],['admin','Admin','/admin']];
+function nav(cur){ $('#nav').innerHTML = routes.map(r=>`<a href="#${r[2]}" class="${cur===r[0]?'on':''}">${ic({home:'home',produk:'grid',pesanan:'receipt',admin:'shield'}[r[0]])}${r[1]}</a>`).join('') }
+function go(){
+  clearInterval(timer);
+  const h = location.hash.replace('#','')||'/';
+  let v='home';
+  if(h.startsWith('/beli/')){ v='produk'; const p=PRODUCTS.find(x=>x.id===h.split('/')[2]); if(!p) return location.hash='#/produk'; if(!co||co.p.id!==p.id||co.step===4) co={p,qty:1,nama:'',wa:'',v:null,step:p.varian?0:1,proof:null,order:null}; nav(v); return checkout() }
+  if(h==='/produk'){v='produk';nav(v);return produk()}
+  if(h==='/pesanan'){v='pesanan';nav(v);return pesanan()}
+  if(h==='/admin'){v='admin';nav(v);return admin()}
+  nav(v); home(); window.scrollTo(0,0);
+}
+addEventListener('hashchange',go);
+
+/* ===================== halaman pembeli ===================== */
+const kartu = p => `<article class="pc">${art(p)}<div class="b"><h3>${p.nama}</h3><p>${p.desk}</p>${p.ket?`<small class="ket">${p.ket}</small>`:''}<div class="f"><span class="price">${hargaLabel(p)}</span><a class="btn sm" href="#/beli/${p.id}">Beli</a></div></div></article>`;
+function home(){
+  $('#app').innerHTML = `<section class="hero"><h1>Produk digital,<br>bayar gampang.</h1><p>Pilih produk, transfer manual, upload bukti. Admin cek dan konfirmasi, statusnya bisa kamu pantau langsung di sini.</p><div class="row"><a class="btn" href="#/produk">${ic('grid')}Lihat produk</a><a class="btn g" href="#/pesanan">${ic('receipt')}Cek pesanan</a></div></section>
+  <div class="sec"><h2>Paling dicari</h2></div><div class="grid">${PRODUCTS.map(kartu).join('')}</div>
+  <div class="card" style="margin-top:22px;display:flex;gap:14px;align-items:center"><span style="color:var(--wa)">${ic('wa')}</span><div><h3>Order lewat WhatsApp juga bisa</h3><p style="color:var(--mut)">Tekan tombol hijau di pojok layar untuk chat langsung dengan admin.</p></div></div>`;
+}
+function produk(){ $('#app').innerHTML = `<div class="sec"><h2>Semua produk</h2></div><div class="grid">${PRODUCTS.map(kartu).join('')}</div>`; window.scrollTo(0,0) }
+
+const hg=()=>co.v?co.v.harga:co.p.harga, pname=()=>co.p.nama+(co.v?' - '+co.v.nama:'');
+function pilihV(i){ co.v=co.p.varian[i]; co.step=1; checkout() }
+function checkout(){
+  const {p,step}=co; window.scrollTo(0,0);
+  const bar = `<div class="steps">${[1,2,3].map(i=>`<i class="${i<=Math.min(step,3)?'on':''}"></i>`).join('')}</div>`;
+  if(step===0){ $('#app').innerHTML=`<div style="max-width:560px;margin:0 auto;display:grid;gap:10px"><h2>Pilih varian</h2><p style="color:var(--mut)">${p.nama}${p.ket?' - '+p.ket.toLowerCase():''}</p>${p.varian.map((v,i)=>`<button class="vr" onclick="pilihV(${i})"><span>${v.nama}</span><b>${rupiah(v.harga)}</b></button>`).join('')}<a class="btn g" href="#/produk">Kembali ke produk</a></div>`; return }
+  const ring = `<div class="card sum"><div><span>Produk</span><b>${pname()}</b></div><div><span>Harga</span><span>${rupiah(hg())}</span></div><div><span>Jumlah</span><span>x${co.qty}</span></div><div class="t"><span>Total pembayaran</span><span id="tot">${rupiah(hg()*co.qty)}</span></div></div>`;
+  let h='';
+  if(step===1) h = `<h2>Checkout</h2><div class="card sum" style="margin:12px 0"><div><span>Produk</span><b>${pname()}</b></div><div><span>Harga</span><span>${rupiah(hg())}</span></div><div><span>Jumlah</span><span class="qty"><button onclick="qty(-1)" aria-label="Kurangi">-</button><b id="q">${co.qty}</b><button onclick="qty(1)" aria-label="Tambah">+</button></span></div><div class="t"><span>Total pembayaran</span><span id="tot">${rupiah(hg()*co.qty)}</span></div></div>
+    <div class="card form"><label>Nama pembeli<input type="text" id="nm" value="${esc(co.nama)}" placeholder="Nama kamu" autocomplete="name"></label><label>Nomor WhatsApp<input type="tel" id="hp" value="${esc(co.wa)}" placeholder="08xxxxxxxxxx" autocomplete="tel"></label><div class="err" id="er"></div><button class="btn" onclick="lanjut()">Lanjut pembayaran</button>${p.varian?'<button class="btn g" onclick="co.nama=$(\'#nm\').value;co.wa=$(\'#hp\').value;co.step=0;checkout()">Ganti varian</button>':''}</div>`;
+  if(step===2) h = `<h2>Pembayaran</h2><div style="height:12px"></div>${ring}<div class="card" style="margin-top:12px"><p>Silakan transfer sesuai total pembayaran ke nomor tujuan berikut:</p><div class="norek"><span>${CONFIG.noTujuan}</span><button class="btn sm g" onclick="salin()">${ic('copy')}<span id="cp">Salin</span></button></div>
+    <h3 style="margin:14px 0 8px">Upload bukti pembayaran</h3><label class="drop" for="fl">${co.proof?`<img src="${co.proof}" alt="Bukti pembayaran">`:ic('upload')}<span>${co.proof?'Ketuk untuk ganti gambar':'Ketuk untuk pilih foto / screenshot bukti'}</span></label><input id="fl" type="file" accept="image/*" hidden onchange="pilih(this)">
+    <div class="err" id="er" style="margin-top:8px"></div><div style="display:grid;gap:8px;margin-top:6px"><button class="btn ok" onclick="bayar()">${ic('check')}Saya Sudah Bayar</button><button class="btn g" onclick="co.step=1;checkout()">Kembali</button></div></div>`;
+  if(step===3) h = `<div class="card center"><div class="spin"></div><h2>Pembayaran sedang diproses...</h2><p style="color:var(--mut);max-width:38ch">Pembayaran kamu sedang menunggu konfirmasi admin. Jangan tutup halaman ini sebentar ya.</p></div>`;
+  if(step===4) h = `<div class="card center pop"><div style="width:64px;height:64px;border-radius:50%;background:var(--wnb);color:var(--wn);display:grid;place-items:center">${ic('clock')}</div><h2>Pesanan masuk</h2><p style="color:var(--mut)">Nomor pesanan <b style="color:var(--ink)">${co.order.id}</b></p>${badge('proses')}<p style="color:var(--mut);max-width:40ch">Pembayaran menunggu konfirmasi admin. Status akan berubah otomatis di halaman Pesanan.</p><a class="btn" href="#/pesanan">Lihat status pesanan</a></div>`;
+  $('#app').innerHTML = `<div style="max-width:560px;margin:0 auto">${step<4?bar:''}${h}</div>`;
+}
+function qty(d){ co.qty=Math.max(1,Math.min(99,co.qty+d)); $('#q').textContent=co.qty; $('#tot').textContent=rupiah(hg()*co.qty) }
+function lanjut(){
+  const n=$('#nm').value.trim(), w=$('#hp').value.replace(/[\s-]/g,'');
+  if(n.length<2) return $('#er').textContent='Isi nama pembeli dulu.';
+  if(!/^(\+?62|0)8\d{7,12}$/.test(w)) return $('#er').textContent='Nomor WhatsApp belum benar. Contoh: 08123456789';
+  co.nama=n; co.wa=w; co.step=2; checkout();
+}
+function salin(){ try{navigator.clipboard.writeText(CONFIG.noTujuan)}catch(e){} $('#cp').textContent='Tersalin' }
+function pilih(inp){
+  const f=inp.files[0]; if(!f) return;
+  const rd=new FileReader();
+  rd.onload=()=>{ const im=new Image(); im.onload=()=>{ const k=Math.min(1,900/Math.max(im.width,im.height)); const c=document.createElement('canvas'); c.width=im.width*k; c.height=im.height*k; c.getContext('2d').drawImage(im,0,0,c.width,c.height); co.proof=c.toDataURL('image/jpeg',.72); checkout() }; im.src=rd.result };
+  rd.readAsDataURL(f);
+}
+function bayar(){
+  if(!co.proof) return $('#er').textContent='Upload bukti pembayaran dulu ya.';
+  const d=new Date(), id='ORD-'+d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')+'-'+Math.floor(1000+Math.random()*9000);
+  const o={id,nama:co.nama,wa:co.wa,produkId:co.p.id,produk:pname(),qty:co.qty,total:hg()*co.qty,proof:co.proof,time:Date.now(),status:'proses'};
+  try{ Orders.add(o); Orders.addMine(id) }catch(e){ return $('#er').textContent='Gagal menyimpan. Coba foto bukti yang lebih kecil.' }
+  co.order=o; co.step=3; checkout();
+  setTimeout(()=>{ if(co&&co.step===3){ co.step=4; checkout() } },2200);
+}
+
+function pesanan(){
+  $('#app').innerHTML = `<div class="sec"><h2>Pesanan kamu</h2></div><div class="card form" style="max-width:none;margin-bottom:14px"><label>Cari dengan nomor pesanan atau nomor WhatsApp<input type="text" id="q" placeholder="ORD-... atau 08..." oninput="listPesanan()"></label></div><div class="list" id="ls"></div>`;
+  listPesanan(); timer=setInterval(listPesanan,2000);
+}
+function listPesanan(){
+  const el=$('#ls'); if(!el) return; const q=($('#q').value||'').trim().toLowerCase().replace(/\s/g,'');
+  const mine=Orders.mine();
+  const a=Orders.all().filter(o=>q? (o.id.toLowerCase()===q||o.wa===q) : mine.includes(o.id));
+  el.innerHTML = a.length? a.map(o=>`<div class="card ord"><div class="h"><div><h3>${esc(o.produk)} x${o.qty}</h3><small style="color:var(--mut)">${o.id} - ${waktu(o.time)}</small></div>${badge(o.status)}</div><div class="sum"><div class="t"><span>Total</span><span>${rupiah(o.total)}</span></div></div><p style="color:var(--mut)">${{proses:'Menunggu konfirmasi admin. Biasanya tidak lama.',diterima:'Pembayaran sudah dikonfirmasi. Admin akan mengirim produk lewat WhatsApp.',ditolak:'Pembayaran ditolak. Hubungi admin lewat WhatsApp untuk cek bukti transfer.'}[o.status]}</p></div>`).join('') : `<div class="empty">${q?'Pesanan tidak ditemukan.':'Belum ada pesanan di perangkat ini. Cari pakai nomor pesanan atau WhatsApp, atau mulai belanja dulu.'}</div>`;
+}
+
+/* ===================== halaman admin ===================== */
+function admin(){ window.scrollTo(0,0); if(!Auth.ok()) return loginView(); dash(); timer=setInterval(()=>{ if(window.__n!==Orders.all().length+'|'+Orders.all().map(o=>o.status).join()) dash(true) },1500) }
+function loginView(){
+  $('#app').innerHTML = `<div class="card form" style="margin-top:30px"><div style="display:flex;gap:10px;align-items:center;color:var(--ac)">${ic('shield')}<h2 style="color:var(--ink)">Login admin</h2></div><p style="color:var(--mut)">Khusus pengelola toko.</p><label>Username<input type="text" id="u" autocomplete="username"></label><label>Password<input type="password" id="pw" autocomplete="current-password" onkeydown="if(event.key==='Enter')masuk()"></label><div class="err" id="er"></div><button class="btn" onclick="masuk()">Masuk</button></div>`;
+}
+function masuk(){ if(Auth.login($('#u').value.trim(),$('#pw').value)) admin(); else $('#er').textContent='Username atau password salah.' }
+function keluar(){ Auth.logout(); admin() }
+function dash(keepScroll){
+  const y=scrollY; const all=Orders.all(); window.__n=all.length+'|'+all.map(o=>o.status).join();
+  const seen=Orders.seen(), baru=all.filter(o=>o.status==='proses'&&!seen.includes(o.id));
+  const cnt=s=>all.filter(o=>o.status===s).length;
+  const a=adminFilter==='semua'?all:all.filter(o=>o.status===adminFilter);
+  $('#app').innerHTML = `<div class="sec"><h2>Dashboard admin</h2><button class="btn sm g" onclick="keluar()">${ic('out')}Keluar</button></div>
+  ${baru.slice(0,3).map(o=>`<div class="notif"><div><b><span class="pulse"></span>Pesanan baru masuk</b><small>Paket: ${esc(o.produk)}</small><small>Total: ${rupiah(o.total)}</small><small>Status: Menunggu Konfirmasi</small></div><button onclick="baca('${o.id}')">Tutup</button></div>`).join('')}${baru.length>3?`<p style="color:var(--mut);margin-bottom:10px">+${baru.length-3} pesanan baru lainnya</p>`:''}
+  <div class="stats"><div class="card"><b>${cnt('proses')}</b><span>Menunggu</span></div><div class="card"><b>${cnt('diterima')}</b><span>Diterima</span></div><div class="card"><b>${cnt('ditolak')}</b><span>Ditolak</span></div></div>
+  <div class="tabs">${[['semua','Semua'],['proses','Menunggu'],['diterima','Diterima'],['ditolak','Ditolak']].map(t=>`<button class="${adminFilter===t[0]?'on':''}" onclick="adminFilter='${t[0]}';dash()">${t[1]}</button>`).join('')}</div>
+  <div class="list">${a.length?a.map(o=>`<div class="card ord"><div class="h"><div><h3>${o.id}</h3><small style="color:var(--mut)">${waktu(o.time)}</small></div>${badge(o.status,1)}</div>
+   <div style="display:flex;gap:14px;align-items:start"><img class="proof" src="${o.proof}" alt="Bukti pembayaran ${o.id}" onclick="zoom('${o.id}')"><div class="meta"><div><small>Pembeli</small>${esc(o.nama)}</div><div><small>WhatsApp</small><a href="https://wa.me/${o.wa.replace(/^0/,'62').replace('+','')}" target="_blank" rel="noopener" style="color:var(--ac)">${esc(o.wa)}</a></div><div><small>Produk</small>${esc(o.produk)} x${o.qty}</div><div><small>Total</small><b>${rupiah(o.total)}</b></div></div></div>
+   ${o.status==='proses'?`<div class="acts"><button class="btn ok sm" onclick="ubah('${o.id}','diterima')">${ic('check')}Konfirmasi Pembayaran</button><button class="btn no sm" onclick="ubah('${o.id}','ditolak')">${ic('x')}Tolak Pembayaran</button></div>`:''}</div>`).join(''):`<div class="empty">Belum ada pesanan di sini.</div>`}</div>`;
+  if(keepScroll) scrollTo(0,y);
+}
+function baca(id){ Orders.markSeen([id]); dash(true) }
+function ubah(id,s){ Orders.setStatus(id,s); Orders.markSeen([id]); dash(true) }
+function zoom(id){ const o=Orders.all().find(x=>x.id===id); $('#lbx').innerHTML=`<div class="lb" onclick="this.remove()"><img src="${o.proof}" alt="Bukti pembayaran"></div>` }
+addEventListener('storage',()=>{ const h=location.hash; if(h==='#/pesanan')listPesanan(); });
+try{ go() }catch(e){ document.getElementById('app').innerHTML='<div class="card" style="margin-top:20px"><h3>Terjadi error</h3><p style="color:var(--mut)">'+esc(e.message)+'</p></div>'; console.error(e) }
+</script>
+</body>
+</html>
