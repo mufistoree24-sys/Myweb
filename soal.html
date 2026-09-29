@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Kuis Interaktif SKI - Walisongo</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #064e3b 50%, #022c22 100%);
+            min-height: 100vh;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+        }
+        .option-btn {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .option-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body class="text-slate-800 flex flex-col justify-between p-3 md:p-6">
+
+    <!-- TOP HEADER -->
+    <header class="max-w-4xl mx-auto w-full flex justify-between items-center mb-4 text-white">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-500/30">
+                <i class="fa-solid fa-mosque text-xl"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg md:text-xl leading-tight">Game Kuis SKI Walisongo</h1>
+                <p class="text-xs text-emerald-300">Sunan Gresik • Sunan Ampel • Sunan Bonang</p>
+            </div>
+        </div>
+        <div id="quiz-header-stats" class="hidden md:flex items-center gap-4 bg-slate-800/80 backdrop-blur px-4 py-2 rounded-xl border border-slate-700">
+            <div class="text-center">
+                <span class="text-xs text-slate-400 block">Skor Sementara</span>
+                <span id="header-score" class="font-bold text-emerald-400 text-base">0</span>
+            </div>
+            <div class="h-6 w-px bg-slate-700"></div>
+            <div class="text-center">
+                <span class="text-xs text-slate-400 block">Waktu</span>
+                <span id="header-timer" class="font-bold text-amber-400 text-base">00:00</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-4xl mx-auto w-full flex-1 flex flex-col justify-center">
+
+        <!-- SCREEN 1: START GAME -->
+        <div id="start-screen" class="glass-card rounded-3xl p-6 md:p-10 shadow-2xl border border-white/20 text-center my-auto">
+            <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl shadow-inner">
+                <i class="fa-solid fa-gamepad"></i>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 mb-3">Siap Menguji Pengetahuanmu?</h2>
+            <p class="text-slate-600 max-w-lg mx-auto mb-8 text-sm md:text-base leading-relaxed">
+                Asah pemahamanmu mengenai sejarah dakwah Sunan Gresik, Sunan Ampel, dan Sunan Bonang dalam game kuis interaktif ini!
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-xl mx-auto mb-8 text-left">
+                <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-100">
+                    <div class="text-emerald-700 font-bold text-lg mb-1"><i class="fa-solid fa-list-check mr-2"></i>20 Soal</div>
+                    <div class="text-xs text-slate-600">Pilihan Ganda (Klik A, B, C, D)</div>
+                </div>
+                <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100">
+                    <div class="text-blue-700 font-bold text-lg mb-1"><i class="fa-solid fa-pen-to-square mr-2"></i>5 Soal</div>
+                    <div class="text-xs text-slate-600">Isian Singkat (Ketik Jawaban)</div>
+                </div>
+                <div class="bg-amber-50 p-4 rounded-2xl border border-amber-100">
+                    <div class="text-amber-700 font-bold text-lg mb-1"><i class="fa-solid fa-file-pen mr-2"></i>5 Soal</div>
+                    <div class="text-xs text-slate-600">Uraian / Esai + Kunci Analisis</div>
+                </div>
+            </div>
+
+            <button id="start-btn" class="w-full sm:w-auto px-10 py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-lg rounded-2xl shadow-xl shadow-emerald-600/30 transition-all hover:scale-105 active:scale-95">
+                <i class="fa-solid fa-play mr-2"></i>Mulai Bermain Sekarang
+            </button>
+        </div>
+
+        <!-- SCREEN 2: ACTIVE QUIZ -->
+        <div id="quiz-screen" class="hidden glass-card rounded-3xl p-4 md:p-8 shadow-2xl border border-white/20 my-auto">
+            <!-- Quiz Progress Top Bar -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-200">
+                <div class="flex items-center justify-between md:justify-start gap-4">
+                    <span id="badge-category" class="px-3 py-1 bg-emerald-100 text-emerald-800 font-bold text-xs rounded-full uppercase tracking-wider">
+                        Pilihan Ganda
+                    </span>
+                    <span class="text-xs font-semibold text-slate-500">
+                        Soal <span id="current-no" class="text-slate-900 font-extrabold text-sm">1</span> dari <span id="total-no">30</span>
+                    </span>
+                </div>
+                
+                <!-- Progress Bar -->
+                <div class="w-full md:w-48 bg-slate-200 h-2.5 rounded-full overflow-hidden">
+                    <div id="progress-fill" class="bg-emerald-500 h-full w-0 transition-all duration-300"></div>
+                </div>
+            </div>
+
+            <!-- Question & Input Area -->
+            <div class="mb-6">
+                <h3 id="question-text" class="text-lg md:text-xl font-bold text-slate-900 leading-snug mb-4">
+                    <!-- Dynamic Question Text -->
+                </h3>
+
+                <!-- MULTIPLE CHOICE OPTIONS CONTAINER -->
+                <div id="options-container" class="grid grid-cols-1 gap-3">
+                    <!-- Options generated via JS -->
+                </div>
+
+                <!-- SHORT ANSWER INPUT CONTAINER -->
+                <div id="short-answer-container" class="hidden space-y-3">
+                    <label class="block text-xs font-semibold text-slate-500">Tuliskan jawaban singkat kamu di sini:</label>
+                    <input type="text" id="short-answer-input" placeholder="Ketik jawabanmu di sini..." class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 font-medium text-slate-800 outline-none transition-all">
+                </div>
+
+                <!-- ESSAY CONTAINER -->
+                <div id="essay-container" class="hidden space-y-3">
+                    <label class="block text-xs font-semibold text-slate-500">Tuliskan uraian / penjelasan lengkap kamu:</label>
+                    <textarea id="essay-input" rows="4" placeholder="Tuliskan jawaban lengkapmu di sini..." class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 font-medium text-slate-800 outline-none transition-all custom-scrollbar"></textarea>
+                    
+                    <button id="show-essay-key-btn" class="text-xs font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1 mt-2">
+                        <i class="fa-solid fa-eye"></i> Intip Kunci Jawaban & Pembahasan
+                    </button>
+                    <div id="essay-key-box" class="hidden p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-900 leading-relaxed mt-2">
+                        <!-- Key text via JS -->
+                    </div>
+                </div>
+
+                <!-- FEEDBACK BOX (INSTANT EVALUATION) -->
+                <div id="feedback-box" class="hidden mt-4 p-4 rounded-xl text-sm font-medium transition-all"></div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex items-center justify-between pt-4 border-t border-slate-200 gap-2">
+                <button id="prev-btn" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed">
+                    <i class="fa-solid fa-arrow-left mr-1"></i> Kembali
+                </button>
+
+                <div class="flex items-center gap-2">
+                    <button id="nav-modal-trigger" class="px-3 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-sm transition-all" title="Daftar Nomor Soal">
+                        <i class="fa-solid fa-border-all"></i>
+                    </button>
+                    <button id="next-btn" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-sm shadow-md shadow-emerald-600/20 transition-all">
+                        Lanjut <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 3: RESULT SCREEN -->
+        <div id="result-screen" class="hidden glass-card rounded-3xl p-6 md:p-10 shadow-2xl border border-white/20 text-center my-auto">
+            <div class="w-20 h-20 bg-amber-100 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-inner">
+                <i class="fa-solid fa-trophy"></i>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 mb-1">Permainan Selesai!</h2>
+            <p class="text-slate-500 text-sm mb-6">Berikut adalah hasil evaluasi kuis SKI Walisongo kamu:</p>
+
+            <!-- Score Cards -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl mx-auto mb-8">
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <span class="text-xs text-slate-500 block mb-1">Nilai PG</span>
+                    <span id="result-pg-score" class="text-2xl font-black text-emerald-600">0</span>
+                    <span class="text-[10px] text-slate-400 block">Max 100</span>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <span class="text-xs text-slate-500 block mb-1">Isian Benar</span>
+                    <span id="result-short-score" class="text-2xl font-black text-blue-600">0/5</span>
+                    <span class="text-[10px] text-slate-400 block">Soal Isian</span>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <span class="text-xs text-slate-500 block mb-1">Esai Dijawab</span>
+                    <span id="result-essay-count" class="text-2xl font-black text-amber-600">0/5</span>
+                    <span class="text-[10px] text-slate-400 block">Uraian</span>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <span class="text-xs text-slate-500 block mb-1">Waktu Selesai</span>
+                    <span id="result-time" class="text-2xl font-black text-purple-600">00:00</span>
+                    <span class="text-[10px] text-slate-400 block">Menit : Detik</span>
+                </div>
+            </div>
+
+            <!-- Review Button & Action Buttons -->
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-3">
+                <button id="toggle-review-btn" class="w-full sm:w-auto px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm rounded-xl transition-all">
+                    <i class="fa-solid fa-magnifying-glass mr-2"></i>Lihat Pembahasan Lengkap
+                </button>
+                <button id="restart-btn" class="w-full sm:w-auto px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm rounded-xl shadow-lg shadow-emerald-600/20 transition-all">
+                    <i class="fa-solid fa-rotate-right mr-2"></i>Main Lagi
+                </button>
+            </div>
+
+            <!-- Review Section (Hidden by Default) -->
+            <div id="review-section" class="hidden mt-8 text-left border-t border-slate-200 pt-6">
+                <h3 class="font-bold text-lg text-slate-900 mb-4 flex items-center justify-between">
+                    <span>Pembahasan Kunci Jawaban</span>
+                    <span class="text-xs font-normal text-slate-500">Semua Soal</span>
+                </h3>
+                <div id="review-list" class="space-y-4 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
+                    <!-- Dynamic review cards -->
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- QUESTION NAVIGATION MODAL -->
+    <div id="nav-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-card rounded-2xl max-w-md w-full p-6 shadow-2xl border border-white/20 animate-fade-in">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-slate-900">Navigasi Nomor Soal</h3>
+                <button id="close-nav-modal" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <p class="text-xs text-slate-500 mb-4">Klik nomor soal untuk berpindah dengan cepat:</p>
+
+            <div id="grid-nav-buttons" class="grid grid-cols-6 gap-2 max-h-64 overflow-y-auto p-1 custom-scrollbar">
+                <!-- Grid buttons via JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // QUIZ DATA STRUCTURE (30 QUESTIONS)
+        // ==========================================
+        const quizData = [
+            // --- 20 PILIHAN GANDA ---
+            {
+                id: 1,
+                type: "mcq",
+                category: "Pilihan Ganda",
+                question: "Nama asli dari Sunan Gresik yang dikenal sebagai tokoh Walisongo pertama di tanah Jawa adalah ...",
+                options: ["Raden Rahmat", "Maulana Malik Ibrahim", "Raden Makdum Ibrahim", "Raden Qasim"],
+                correct: 1, // Option B
+                explanation: "Nama asli Sunan Gresik adalah Maulana Malik Ibrahim. Raden Rahmat adalah Sunan Ampel dan Raden Makdum Ibrahim adalah Sunan Bonang."
+            },
+            {
+                id: 2,
+                type: "mcq",
+                category: "Pilihan Ganda",
+                question: "Sunan Gresik diperkirakan berasal dari wilayah Samarkand (Asia Tengah) atau Persia. Beliau memusatkan dakwahnya di daerah ...",
+                options: ["Tuban", "Surabaya", "Gresik", "Demak"],
+                correct: 2, // Option C
+                explanation: "Sunan Gresik mendarat dan memusatkan kegiatan dakwah Islamnya di pesisir utara Jawa, tepatnya di Gresik, Jawa Timur."
+            },
+            {
+                id: 3,
+                type: "mcq",
+                category: "Pilihan Ganda",
+                question: "Ketika Sunan Gresik pertama kali datang dan berdakwah di tanah Jawa, kerajaan Hindu-Buddha terbesar yang sedang berkuasa adalah ...",
+                options: ["Kerajaan Singasari", "Kerajaan Kediri", "Kerajaan Tarumanagara", "Kerajaan Majapahit"],
+                correct: 3, // Option D
+                explanation: "Pada awal kedatangan Sunan Gresik (abad ke-14/15), Kerajaan Majapahit merupakan kerajaan Hindu-Buddha terbesar yang berkuasa di Jawa."
+            },
+            {
+                id: 4,
+                type: "mcq",
+                category: "Pilihan Ganda",
+                question: "Sistem pendidikan Hindu-Buddha yang berupa tempat belajar rohani (Mandala / Ashrama) diadaptasi oleh Sunan Gresik menjadi bentuk lembaga pendidikan Islam yang dikenal dengan ...",
+                options: ["Madrasah", "Surau", "Pesantren", "Majelis Taklim"],
+                correct: 2, // Option C
+                explanation: "Sunan Gresik memodifikasi konsep Mandala/Ashrama menjadi sistem pondok pesantren tempat tinggal santri untuk mendalami Islam."
+            },
+            {
+                id: 5,
+                type: "mcq",
+                category: "Pilihan Ganda",
+                question: "Masyarakat pada masa Hindu-Buddha terbagi ke dalam empat kasta (Brahmana, Ksatria, Waisya, dan Sudra). Ajaran utama Sunan Gresik dalam menyikapi sistem kasta tersebut adalah ...",
+                options: [
+                    "Memperkuat kedudukan kasta Brahmana dan Ksatria",
+                    "Mengajarkan bahwa semua manusia sama derajatnya di hadapan Allah",
+                    "Menghapus secara paksa sistem kasta melalui jalur militer",
+                    "Memisahkan tempat ibadah berdasarkan tingkatan kasta"
+                ],
+                correct: 1, // Option B
+                explanation: "Islam tidak mengenal sistem kasta. Sunan Gresik merangkul kasta terbawah (Sudra/Paria) dan mengajarkan kesetaraan manusia di mata Allah."
+            },
+            {
+                id: 6,
+                type: "mcq",
+                category: "Pilihan Ganda",
+                question: "Sunan Gresik wafat pada 12 Rabiul Awal 822 H / 1419 M dan dimakamkan di Desa ...",
+                options: ["Gapura Wetan, Gresik", "Ampeldenta, Surabaya", "Bonang, Tuban", "Kadilangu, Demak"],
+                correct: 0, // Option A
+                explanation: "Makam Sunan Gresik terletak di Desa Gapura Wetan, Kecamatan Gresik, Kabupaten Gresik, Jawa Timur."
+            },
+            {
+                id: 7,
+                type: "mcq",
+                category: "Pilihan Ganda",
+                question: "Ibu dari Sunan Ampel adalah seorang putri dari Raja Champa yang bernama ...",
+                options: ["Dewi Condrowati", "Nyai Ageng Manila", "Dewi Candrawulan", "Nyai Ageng Pinatih"],
+                correct: 2, // Option C
+                explanation: "Ayah Sunan Ampel adalah Syekh Ibrahim Asmarakandi dan ibunya adalah Dewi Candrawulan, putri Raja Champa."
+            },
+            {
+                id: 8,
+                type: "mcq",
+                category: "Pilihan Ganda",
+                question: "Raja Majapahit (Brawijaya) memberikan sebidang tanah kepada Sunan Ampel untuk mendirikan pusat dakwah dan pesantren, yaitu di wilayah ...",
+                options: ["Gresik", "Ampeldenta", "Lasem", "Tuban"],
+                correct: 1, // Option B
+                explanation: "Raja Majapahit menghadiahkan kawasan Ampeldenta di Surabaya kepada Sunan Ampel sebagai pusat dakwah."
+            },
+            {
+                id: 9,
+                type: "mcq",
+                category: "Pilihan Ganda",
+                question: "Ajaran Falsafah 'Moh Limo' yang dicetuskan oleh Sunan Ampel bertujuan untuk merubah akhlak masyarakat. Kata 'Moh' dalam bahasa Jawa berarti ...",
+                options: ["Tidak mau / tidak boleh", "Harus dikerjakan", "Sebaiknya dihindari", "Boleh dilakukan"],
+                correct: 0, // Option A
+                explanation: "Kata 'Moh' berarti 'tidak mau' atau menolak melakukan lima perbuatan tercela tersebut."
+            },
+            {
+                id: 10,
+                type: "mcq",
+                category: "Pilihan Ganda",
+                question: "Kerajaan Islam pertama di pulau Jawa yang berdiri atas bimbingan dan dukungan penuh Sunan Ampel adalah ...",
+                options: ["Kesultanan Banten", "Kesultanan Mataram", "Kesultanan Cirebon", "Kesultanan Demak"],
+                correct: 3, // Option D
+                explanation: "Kesultanan Demak dipimpin oleh Raden Patah berdiri atas dorongan dan bimbingan Sunan Ampel beserta para wali."
+            },
+            {
+                id: 11,
+                type: "mcq",
+                category: "Pilihan Ganda",
+                question: "Di kompleks Masjid Agung Sunan Ampel terdapat 5 gapura simbolis. Gapura yang melambangkan rukun Islam pertama (Syahadat) adalah ...",
+                options: ["Gapura Madep", "Gapura Paneksen", "Gapura Ngamal", "Gapura Munggah"],
+                correct: 1, // Option B
+                explanation: "Gapura Paneksen berasal dari kata 'ksen' (saksi) yang menyimbolkan Syahadat (kesaksian)."
+            },
+            {
+                id: 12,
+                type: "mcq",
+                category: "Pilihan Ganda",
+                question: "Dua orang santri dekat Sunan Ampel yang makamnya berada di dalam kompleks makam Sunan Ampel adalah ...",
+                options: ["Mbah Sholeh dan Mbah Bolong", "Mbah Karim dan Mbah Wasil", "Mbah Hamid dan Mbah Kholil", "Mbah Sahal dan Mbah Basyir"],
+                correct: 0, // Option A
+                explanation: "Mbah Sholeh (terkenal dengan legenda 9 makamnya) dan Mbah Bolong adalah santri dekat Sunan Ampel."
+            },
+            {
+                id: 13,
+                type: "mcq",
+                category: "Pilihan Ganda",
+                question: "Sebagai strategi akulturasi bahasa, Sunan Ampel menggunakan istilah pra-Islam untuk menyebut tempat ibadah kecil pengganti musala, yaitu ...",
+                options: ["Sanggar", "Langgar", "Pura", "Candi"],
+                correct: 1, // Option B
+                explanation: "Sunan Ampel mempopulerkan kata 'Langgar' untuk sebutan musala sebagai bentuk akulturasi budaya setempat."
+            },
+            {
+                id: 14,
+                type: "mcq",
+                category: "Pilihan Ganda",
+                question: "Dua orang putra Sunan Ampel yang menjadi penerus dakwah Walisongo adalah ...",
+                options: ["Sunan Gresik dan Sunan Giri", "Sunan Bonang dan Sunan Drajat", "Sunan Kalijaga dan Sunan Muria", "Sunan Kudus dan Sunan Gunung Jati"],
+                correct: 1, // Option B
+                explanation: "Dua putra Sunan Ampel yang menjadi anggota Walisongo adalah Sunan Bonang (Raden Makdum Ibrahim) dan Sunan Drajat (Raden Qasim)."
+            },
+            {
+                id: 15,
+                type: "mcq",
+                category: "Pilihan Ganda",
+                question: "Sunan Bonang memiliki nama asli Raden Makdum Ibrahim. Ibu dari Sunan Bonang adalah ...",
+                options: ["Dewi Candrawulan", "Nyai Ageng Manila / Dewi Condrowati", "Ratu Kalinyamat", "Dewi Saroh"],
+                correct: 1, // Option B
+                explanation: "Ibu Sunan Bonang adalah Nyai Ageng Manila (Dewi Condrowati), putri dari Adipati Tuban Arya Teja."
+            },
+            {
+                id: 16,
+                type: "mcq",
+                category: "Pilihan Ganda",
+                question: "Alat musik tradisional berupa deretan gong kecil yang disempurnakan oleh Sunan Bonang sebagai sarana mengiringi dakwah dinamakan ...",
+                options: ["Kendang", "Saron", "Bonang", "Rebana"],
+                correct: 2, // Option C
+                explanation: "Sunan Bonang menyempurnakan instrumen gamelan berwujud gong-gong kecil yang dinamakan 'Bonang'."
+            },
+            {
+                id: 17,
+                type: "mcq",
+                category: "Pilihan Ganda",
+                question: "Karya tembang terkenal ciptaan Sunan Bonang yang mengajarkan lima penawar jiwa/obat hati adalah ...",
+                options: ["Lir-Ilir", "Gundul-Gundul Pacul", "Cublak-Cublak Suweng", "Tombo Ati"],
+                correct: 3, // Option D
+                explanation: "Tembang 'Tombo Ati' diciptakan oleh Sunan Bonang yang berisi 5 resep penawar atau obat penyakit hati."
+            },
+            {
+                id: 18,
+                type: "mcq",
+                category: "Pilihan Ganda",
+                question: "Di daerah Tuban terdapat peninggalan Sunan Bonang berupa sumur yang memiliki keunikan rasa airnya tetap tawar meskipun terletak dekat pantai. Sumur tersebut bernama ...",
+                options: ["Sumur Gumuling", "Sumur Srumbung", "Sumur Zamzam", "Sumur Bandung"],
+                correct: 1, // Option B
+                explanation: "Sumur Srumbung di Tuban adalah sumur air tawar peninggalan Sunan Bonang yang lokasinya berdekatan dengan tepi pantai."
+            },
+            {
+                id: 19,
+                type: "mcq",
+                category: "Pilihan Ganda",
+                question: "Murid Sunan Bonang yang ikut serta dalam mengembangkan dan menyempurnakan bentuk pertunjukan wayang kulit sebagai sarana dakwah Islam adalah ...",
+                options: ["Sunan Kalijaga", "Sunan Giri", "Sunan Kudus", "Sunan Gunung Jati"],
+                correct: 0, // Option A
+                explanation: "Sunan Kalijaga berguru kepada Sunan Bonang dan keduanya bekerja sama mengembangkan kesenian wayang kulit sebagai media pendorong Islamisasi."
+            },
+            {
+                id: 20,
+                type: "mcq",
+                category: "Pilihan Ganda",
+                question: "Strategi dakwah Sunan Bonang dalam memanfaatkan seni wayang kulit adalah ...",
+                options: [
+                    "Melarang pertunjukan wayang karena dianggap ajaran non-Islam",
+                    "Mengubah bentuk wayang menjadi patung manusia",
+                    "Memasukkan nilai-nilai tauhid dan keislaman ke dalam cerita wayang",
+                    "Mengharuskan penonton membayar tiket mahal untuk menonton wayang"
+                ],
+                correct: 2, // Option C
+                explanation: "Sunan Bonang menyusupkan ajaran tauhid, Rukun Islam, dan kisah-kisah bernuansa keislaman ke dalam alur lakon wayang."
+            },
+
+            // --- 5 ISIAN SINGKAT ---
+            {
+                id: 21,
+                type: "short",
+                category: "Isian Singkat",
+                question: "Julukan Sunan Gresik yang diperoleh karena kebiasaannya sering meletakkan kitab suci di atas bantal saat mengajar adalah ...",
+                acceptableAnswers: ["kakek bantal", "kakekbantal"],
+                explanation: "Julukan Sunan Gresik tersebut adalah 'Kakek Bantal'."
+            },
+            {
+                id: 22,
+                type: "short",
+                category: "Isian Singkat",
+                question: "Ajaran Sunan Ampel yang melarang lima perbuatan tercela (berjudi, minum khamr, mencuri, menggunakan narkoba, dan berzina) disebut ajaran ...",
+                acceptableAnswers: ["moh limo", "mohlimo", "5m", "5 m"],
+                explanation: "Falsafah larangan tersebut dinamakan ajaran 'Moh Limo' (5 M)."
+            },
+            {
+                id: 23,
+                type: "short",
+                category: "Isian Singkat",
+                question: "Dua orang putra dari Sunan Ampel yang menjadi anggota Walisongo adalah Sunan Bonang dan Sunan ...",
+                acceptableAnswers: ["drajat", "sunan drajat"],
+                explanation: "Dua putra Sunan Ampel anggota Walisongo adalah Sunan Bonang dan Sunan Drajat."
+            },
+            {
+                id: 24,
+                type: "short",
+                category: "Isian Singkat",
+                question: "Salah satu tembang karya terkenal Sunan Bonang yang merinci 5 hal obat/penawar hati adalah ...",
+                acceptableAnswers: ["tombo ati", "tomboati"],
+                explanation: "Tembang karya Sunan Bonang tersebut adalah 'Tombo Ati'."
+            },
+            {
+                id: 25,
+                type: "short",
+                category: "Isian Singkat",
+                question: "Peninggalan berupa sumber air tawar milik Sunan Bonang di Tuban yang terletak dekat garis pantai dinamakan Sumur ...",
+                acceptableAnswers: ["srumbung", "sumur srumbung"],
+                explanation: "Nama sumur peninggalan Sunan Bonang di Tuban tersebut adalah Sumur Srumbung."
+            },
+
+            // --- 5 ESAI / URAIAN ---
+            {
+                id: 26,
+                type: "essay",
+                category: "Uraian / Esai",
+                question: "Jelaskan bagaimana Sunan Gresik mengadopsi konsep tempat belajar peninggalan tradisi Hindu-Buddha (Mandala/Ashrama) hingga melahirkan sistem pesantren!",
+                explanation: "Sebelum Islam datang, masyarakat Hindu-Buddha belajar ilmu keagamaan di tempat pemukiman bernama Mandala/Ashrama. Sunan Gresik mengadopsi efektivitas pemukiman belajar ini lalu mengadaptasinya menjadi sistem Pondok Pesantren, di mana para santri tinggal/menginap bersama kiai untuk mempelajari ajaran Islam dan keterampilan praktis."
+            },
+            {
+                id: 27,
+                type: "essay",
+                category: "Uraian / Esai",
+                question: "Uraikan secara rinci kelima larangan dalam falsafah Moh Limo yang dicanangkan oleh Sunan Ampel beserta artinya!",
+                explanation: "1) Moh Main (tidak mau berjudi)\n2) Moh Ngombe (tidak mau minum minuman keras)\n3) Moh Maling (tidak mau mencuri)\n4) Moh Madat (tidak mau mengonsumsi narkoba/candu)\n5) Moh Madon (tidak mau berzina/bermain wanita)."
+            },
+            {
+                id: 28,
+                type: "essay",
+                category: "Uraian / Esai",
+                question: "Sebutkan lima gapura simbolis yang berada di kompleks Masjid Agung Sunan Ampel dan jelaskan hubungannya dengan Rukun Islam!",
+                explanation: "1) Gapura Paneksen: Kesaksian (Syahadat)\n2) Gapura Madep: Menghadap kiblat (Salat)\n3) Gapura Ngamal: Beramal/menyisihkan harta (Zakat)\n4) Gapura Poso: Melaksanakan Puasa\n5) Gapura Munggah: Naik haji bagi yang mampu."
+            },
+            {
+                id: 29,
+                type: "essay",
+                category: "Uraian / Esai",
+                question: "Tuliskan 5 hal obat hati (Tombo Ati) yang diajarkan oleh Sunan Bonang dalam tembangnya!",
+                explanation: "1) Moco Al-Qur'an lan maknane (Membaca Al-Qur'an dan maknanya)\n2) Sholat wengi lakonono (Salat malam/Tahajud)\n3) Wong kang sholeh kumpulono (Berkumpul dengan orang saleh)\n4) Weteng ira kudu ingkang luwe (Memperbanyak puasa)\n5) Zikir wengi ingkang suwe (Memperbanyak zikir malam)."
+            },
+            {
+                id: 30,
+                type: "essay",
+                category: "Uraian / Esai",
+                question: "Bagaimana Sunan Bonang menerapkan strategi akulturasi budaya lokal (seni gamelan dan wayang) dalam menyampaikan ajaran Islam?",
+                explanation: "Sunan Bonang menyempurnakan alat musik gamelan 'bonang' untuk menarik perhatian masyarakat dengan keindahan bunyinya. Selain itu, beliau memanfaatkan seni wayang kulit tanpa merusak budayanya, tetapi menyusupkan ajaran tauhid, pesan moral, dan kisah-kisah Islami ke dalam lakon pewayangan."
+            }
+        ];
+
+        // ==========================================
+        // APP STATE VARIABLES
+        // ==========================================
+        let currentIndex = 0;
+        let userAnswers = new Array(quizData.length).fill(null);
+        let timerInterval = null;
+        let secondsElapsed = 0;
+
+        // DOM Elements
+        const startScreen = document.getElementById('start-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const startBtn = document.getElementById('start-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const shortAnswerContainer = document.getElementById('short-answer-container');
+        const shortAnswerInput = document.getElementById('short-answer-input');
+        const essayContainer = document.getElementById('essay-container');
+        const essayInput = document.getElementById('essay-input');
+        const essayKeyBox = document.getElementById('essay-key-box');
+        const showEssayKeyBtn = document.getElementById('show-essay-key-btn');
+        const feedbackBox = document.getElementById('feedback-box');
+
+        const badgeCategory = document.getElementById('badge-category');
+        const currentNoEl = document.getElementById('current-no');
+        const totalNoEl = document.getElementById('total-no');
+        const progressFill = document.getElementById('progress-fill');
+
+        const quizHeaderStats = document.getElementById('quiz-header-stats');
+        const headerScore = document.getElementById('header-score');
+        const headerTimer = document.getElementById('header-timer');
+
+        const navModalTrigger = document.getElementById('nav-modal-trigger');
+        const navModal = document.getElementById('nav-modal');
+        const closeNavModal = document.getElementById('close-nav-modal');
+        const gridNavButtons = document.getElementById('grid-nav-buttons');
+
+        const toggleReviewBtn = document.getElementById('toggle-review-btn');
+        const reviewSection = document.getElementById('review-section');
+        const reviewList = document.getElementById('review-list');
+
+        // ==========================================
+        // EVENT LISTENERS & INITIALIZATION
+        // ==========================================
+        startBtn.addEventListener('click', startQuiz);
+        prevBtn.addEventListener('click', goToPrevQuestion);
+        nextBtn.addEventListener('click', goToNextQuestion);
+        restartBtn.addEventListener('click', restartQuiz);
+
+        navModalTrigger.addEventListener('click', () => {
+            renderGridNav();
+            navModal.classList.remove('hidden');
+        });
+        closeNavModal.addEventListener('click', () => navModal.classList.add('hidden'));
+
+        showEssayKeyBtn.addEventListener('click', () => {
+            essayKeyBox.classList.toggle('hidden');
+        });
+
+        toggleReviewBtn.addEventListener('click', () => {
+            reviewSection.classList.toggle('hidden');
+        });
+
+        function startQuiz() {
+            startScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            quizHeaderStats.classList.remove('hidden');
+
+            currentIndex = 0;
+            userAnswers = new Array(quizData.length).fill(null);
+            secondsElapsed = 0;
+            totalNoEl.textContent = quizData.length;
+
+            startTimer();
+            renderQuestion();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                secondsElapsed++;
+                const mins = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
+                const secs = String(secondsElapsed % 60).padStart(2, '0');
+                headerTimer.textContent = `${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function renderQuestion() {
+            const q = quizData[currentIndex];
+
+            // Update header info
+            currentNoEl.textContent = currentIndex + 1;
+            badgeCategory.textContent = q.category;
+            questionText.textContent = `${q.id}. ${q.question}`;
+
+            // Progress bar
+            const percent = ((currentIndex + 1) / quizData.length) * 100;
+            progressFill.style.width = `${percent}%`;
+
+            // Reset Input Containers
+            optionsContainer.classList.add('hidden');
+            shortAnswerContainer.classList.add('hidden');
+            essayContainer.classList.add('hidden');
+            feedbackBox.classList.add('hidden');
+            essayKeyBox.classList.add('hidden');
+
+            // Hide/Show Prev button
+            prevBtn.disabled = currentIndex === 0;
+
+            // Next button text
+            if (currentIndex === quizData.length - 1) {
+                nextBtn.innerHTML = `Selesai <i class="fa-solid fa-flag-checkered ml-1"></i>`;
+                nextBtn.classList.replace('bg-emerald-600', 'bg-amber-600');
+                nextBtn.classList.replace('hover:bg-emerald-500', 'hover:bg-amber-500');
+            } else {
+                nextBtn.innerHTML = `Lanjut <i class="fa-solid fa-arrow-right ml-1"></i>`;
+                nextBtn.classList.replace('bg-amber-600', 'bg-emerald-600');
+                nextBtn.classList.replace('hover:bg-amber-500', 'hover:bg-emerald-500');
+            }
+
+            // RENDER BY QUESTION TYPE
+            if (q.type === 'mcq') {
+                renderMCQ(q);
+            } else if (q.type === 'short') {
+                renderShortAnswer(q);
+            } else if (q.type === 'essay') {
+                renderEssay(q);
+            }
+
+            updateHeaderScore();
+        }
+
+        function renderMCQ(q) {
+            optionsContainer.classList.remove('hidden');
+            optionsContainer.innerHTML = '';
+
+            const selectedOption = userAnswers[currentIndex];
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                const label = String.fromCharCode(65 + idx); // A, B, C, D
+                
+                let btnStyle = "bg-white border-slate-200 text-slate-700 hover:border-emerald-300 hover:bg-emerald-50/50";
+                let badgeStyle = "bg-slate-100 text-slate-600 border-slate-200";
+
+                if (selectedOption !== null && selectedOption !== undefined) {
+                    if (selectedOption === idx) {
+                        if (idx === q.correct) {
+                            btnStyle = "bg-emerald-50 border-emerald-500 text-emerald-900 font-semibold shadow-sm";
+                            badgeStyle = "bg-emerald-500 text-white border-emerald-500";
+                        } else {
+                            btnStyle = "bg-rose-50 border-rose-400 text-rose-900 font-semibold shadow-sm";
+                            badgeStyle = "bg-rose-500 text-white border-rose-500";
+                        }
+                    } else if (idx === q.correct) {
+                        btnStyle = "bg-emerald-50 border-emerald-400 text-emerald-900 font-semibold";
+                        badgeStyle = "bg-emerald-500 text-white border-emerald-500";
+                    }
+                }
+
+                btn.className = `option-btn w-full p-4 rounded-2xl border text-left flex items-start gap-3 transition-all ${btnStyle}`;
+                btn.innerHTML = `
+                    <span class="w-7 h-7 rounded-lg border text-xs font-bold flex items-center justify-center shrink-0 ${badgeStyle}">
+                        ${label}
+                    </span>
+                    <span class="text-sm md:text-base leading-snug pt-0.5">${opt}</span>
+                `;
+
+                btn.addEventListener('click', () => {
+                    userAnswers[currentIndex] = idx;
+                    renderQuestion();
+                });
+
+                optionsContainer.appendChild(btn);
+            });
+
+            // Show explanation feedback if answered
+            if (selectedOption !== null && selectedOption !== undefined) {
+                feedbackBox.classList.remove('hidden');
+                if (selectedOption === q.correct) {
+                    feedbackBox.className = "mt-4 p-4 rounded-xl text-sm bg-emerald-100 border border-emerald-300 text-emerald-900";
+                    feedbackBox.innerHTML = `<i class="fa-solid fa-circle-check mr-2 text-emerald-600"></i><strong>Jawabanmu Tepat!</strong> ${q.explanation}`;
+                } else {
+                    feedbackBox.className = "mt-4 p-4 rounded-xl text-sm bg-rose-100 border border-rose-300 text-rose-900";
+                    feedbackBox.innerHTML = `<i class="fa-solid fa-circle-xmark mr-2 text-rose-600"></i><strong>Kurang Tepat.</strong> Jawaban benar: <b>${String.fromCharCode(65 + q.correct)}. ${q.options[q.correct]}</b>.<br><span class="text-xs text-rose-800 mt-1 block">${q.explanation}</span>`;
+                }
+            }
+        }
+
+        function renderShortAnswer(q) {
+            shortAnswerContainer.classList.remove('hidden');
+            shortAnswerInput.value = userAnswers[currentIndex] || '';
+
+            shortAnswerInput.oninput = (e) => {
+                userAnswers[currentIndex] = e.target.value;
+            };
+
+            if (userAnswers[currentIndex]) {
+                const isCorrect = checkShortAnswer(userAnswers[currentIndex], q.acceptableAnswers);
+                feedbackBox.classList.remove('hidden');
+                if (isCorrect) {
+                    feedbackBox.className = "mt-4 p-4 rounded-xl text-sm bg-emerald-100 border border-emerald-300 text-emerald-900";
+                    feedbackBox.innerHTML = `<i class="fa-solid fa-circle-check mr-2 text-emerald-600"></i><strong>Hebat! Jawaban Tepat.</strong> ${q.explanation}`;
+                } else {
+                    feedbackBox.className = "mt-4 p-4 rounded-xl text-sm bg-amber-100 border border-amber-300 text-amber-900";
+                    feedbackBox.innerHTML = `<i class="fa-solid fa-lightbulb mr-2 text-amber-600"></i><strong>Catatan Kunci Jawaban:</strong> Jawaban ideal yang dicari adalah: <b>${q.acceptableAnswers[0].toUpperCase()}</b>.`;
+                }
+            }
+        }
+
+        function checkShortAnswer(val, acceptableList) {
+            if (!val) return false;
+            const cleaned = val.trim().toLowerCase();
+            return acceptableList.some(acc => cleaned.includes(acc.toLowerCase()));
+        }
+
+        function renderEssay(q) {
+            essayContainer.classList.remove('hidden');
+            essayInput.value = userAnswers[currentIndex] || '';
+            essayKeyBox.textContent = q.explanation;
+
+            essayInput.oninput = (e) => {
+                userAnswers[currentIndex] = e.target.value;
+            };
+        }
+
+        function goToNextQuestion() {
+            if (currentIndex < quizData.length - 1) {
+                currentIndex++;
+                renderQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function goToPrevQuestion() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                renderQuestion();
+            }
+        }
+
+        function updateHeaderScore() {
+            let score = 0;
+            quizData.forEach((q, idx) => {
+                if (q.type === 'mcq' && userAnswers[idx] === q.correct) {
+                    score += 5; // 20 * 5 = 100 max
+                }
+            });
+            headerScore.textContent = score;
+        }
+
+        function renderGridNav() {
+            gridNavButtons.innerHTML = '';
+            quizData.forEach((q, idx) => {
+                const btn = document.createElement('button');
+                const answered = userAnswers[idx] !== null && userAnswers[idx] !== undefined && userAnswers[idx] !== '';
+
+                let statusClass = "bg-slate-100 text-slate-700 hover:bg-slate-200 border-slate-200";
+                if (idx === currentIndex) {
+                    statusClass = "ring-2 ring-emerald-500 bg-emerald-600 text-white font-bold";
+                } else if (answered) {
+                    statusClass = "bg-emerald-100 text-emerald-800 font-semibold border-emerald-300";
+                }
+
+                btn.className = `h-10 rounded-xl text-xs font-bold border transition-all ${statusClass}`;
+                btn.textContent = idx + 1;
+                btn.addEventListener('click', () => {
+                    currentIndex = idx;
+                    renderQuestion();
+                    navModal.classList.add('hidden');
+                });
+
+                gridNavButtons.appendChild(btn);
+            });
+        }
+
+        function finishQuiz() {
+            clearInterval(timerInterval);
+            quizScreen.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+
+            // Calculate PG Score
+            let pgScore = 0;
+            let shortCorrect = 0;
+            let essayAnswered = 0;
+
+            quizData.forEach((q, idx) => {
+                const ans = userAnswers[idx];
+                if (q.type === 'mcq') {
+                    if (ans === q.correct) pgScore += 5;
+                } else if (q.type === 'short') {
+                    if (ans && checkShortAnswer(ans, q.acceptableAnswers)) shortCorrect++;
+                } else if (q.type === 'essay') {
+                    if (ans && ans.trim().length > 0) essayAnswered++;
+                }
+            });
+
+            document.getElementById('result-pg-score').textContent = pgScore;
+            document.getElementById('result-short-score').textContent = `${shortCorrect}/5`;
+            document.getElementById('result-essay-count').textContent = `${essayAnswered}/5`;
+
+            const mins = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
+            const secs = String(secondsElapsed % 60).padStart(2, '0');
+            document.getElementById('result-time').textContent = `${mins}:${secs}`;
+
+            renderReviewList();
+        }
+
+        function renderReviewList() {
+            reviewList.innerHTML = '';
+            quizData.forEach((q, idx) => {
+                const ans = userAnswers[idx];
+                const card = document.createElement('div');
+                card.className = "p-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs leading-relaxed space-y-2";
+
+                let statusBadge = "";
+                let ansText = "";
+
+                if (q.type === 'mcq') {
+                    const isCorrect = ans === q.correct;
+                    statusBadge = isCorrect 
+                        ? `<span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded-md">Benar (+5)</span>`
+                        : `<span class="px-2 py-0.5 bg-rose-100 text-rose-800 font-bold rounded-md">Salah</span>`;
+                    
+                    const userChoice = ans !== null ? `${String.fromCharCode(65 + ans)}. ${q.options[ans]}` : 'Tidak dijawab';
+                    const correctChoice = `${String.fromCharCode(65 + q.correct)}. ${q.options[q.correct]}`;
+
+                    ansText = `
+                        <div><b>Jawaban Kamu:</b> <span class="${isCorrect ? 'text-emerald-700' : 'text-rose-700'}">${userChoice}</span></div>
+                        <div><b>Kunci Jawaban:</b> <span class="text-emerald-700 font-semibold">${correctChoice}</span></div>
+                    `;
+                } else if (q.type === 'short') {
+                    const isCorrect = ans && checkShortAnswer(ans, q.acceptableAnswers);
+                    statusBadge = isCorrect 
+                        ? `<span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded-md">Tepat</span>`
+                        : `<span class="px-2 py-0.5 bg-amber-100 text-amber-800 font-bold rounded-md">Perlu Dicermati</span>`;
+
+                    ansText = `
+                        <div><b>Jawaban Kamu:</b> ${ans || '<i>Tidak diisi</i>'}</div>
+                        <div><b>Kunci Utama:</b> <span class="text-emerald-700 font-semibold">${q.acceptableAnswers[0].toUpperCase()}</span></div>
+                    `;
+                } else if (q.type === 'essay') {
+                    statusBadge = `<span class="px-2 py-0.5 bg-blue-100 text-blue-800 font-bold rounded-md">Uraian / Esai</span>`;
+                    ansText = `
+                        <div><b>Jawaban Kamu:</b> ${ans || '<i>Tidak diisi</i>'}</div>
+                        <div><b>Kunci Analisis / Pembahasan:</b> <br><span class="text-slate-700 bg-white p-2 border rounded block mt-1">${q.explanation.replace(/\n/g, '<br>')}</span></div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-center gap-2">
+                        <span class="font-extrabold text-slate-800 text-sm">Soal No. ${idx + 1} (${q.category})</span>
+                        ${statusBadge}
+                    </div>
+                    <p class="text-slate-900 font-semibold">${q.question}</p>
+                    ${ansText}
+                `;
+
+                reviewList.appendChild(card);
+            });
+        }
+
+        function restartQuiz() {
+            resultScreen.classList.add('hidden');
+            reviewSection.classList.add('hidden');
+            startQuiz();
+        }
+    </script>
+</body>
+</html>
